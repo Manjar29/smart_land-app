@@ -12,8 +12,9 @@
                 <span class="chip">GIS Mapping</span>
             </div>
             <div style="display: flex; gap: 0.75rem; margin-top: 1.2rem; flex-wrap: wrap;">
-                <a href="#search" class="btn btn-brand">Search Land Record</a>
-                <a href="#services" class="btn btn-light">Explore Services</a>
+                <a href="{{ route('land.search') }}" class="btn btn-brand">Search Land Record</a>
+                <a href="{{ route('mutation.track') }}" class="btn btn-light">Track Mutation</a>
+                <a href="{{ route('khajna.apply') }}" class="btn btn-light">Apply for Khajna</a>
             </div>
         </div>
 

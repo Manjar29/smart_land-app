@@ -13,6 +13,9 @@
             <a href="#notices">Notices</a>
             <a href="#map">Map</a>
             <a href="#contact">Contact</a>
+            <a href="{{ route('khajna.apply') }}">Khajna</a>
+            <a href="{{ route('mutation.apply') }}">Mutation</a>
+            <a href="{{ route('district-admin.login') }}">Admin</a>
             @if (Route::has('login'))
                 @auth
                     <a class="btn btn-light" href="{{ url('/dashboard') }}">Dashboard</a>

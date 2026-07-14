@@ -233,6 +233,111 @@
         grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
     }
 
+    .two-col-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .form-panel {
+        display: grid;
+        gap: 0.9rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.85rem;
+    }
+
+    .results-shell {
+        margin-top: 1rem;
+    }
+
+    .results-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .result-card {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .result-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .result-top h3 {
+        margin-top: 0.35rem;
+    }
+
+    .result-meta {
+        font-size: 0.9rem;
+        color: var(--ink-soft);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.22rem 0.55rem;
+        border-radius: 999px;
+        background: #e0f2fe;
+        color: #075985;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+    .result-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        color: var(--ink-soft);
+        font-size: 0.92rem;
+    }
+
+    .timeline {
+        display: grid;
+        gap: 0.85rem;
+    }
+
+    .timeline-item {
+        display: grid;
+        grid-template-columns: 18px 1fr;
+        gap: 0.6rem;
+        align-items: start;
+    }
+
+    .timeline-item b {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        margin-top: 0.25rem;
+        background: var(--brand);
+        box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+    }
+
+    .timeline-item span {
+        color: var(--ink-soft);
+    }
+
+    .receipt-banner {
+        margin-top: 1rem;
+        border-left: 4px solid var(--brand);
+    }
+
+    .muted {
+        color: var(--ink-soft);
+    }
+
     .field {
         display: grid;
         gap: 0.35rem;
@@ -395,6 +500,11 @@
         .search-box {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
+
+        .results-grid,
+        .two-col-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
     @media (max-width: 820px) {
@@ -418,6 +528,10 @@
         .services-grid,
         .workflow,
         .search-box {
+            grid-template-columns: 1fr;
+        }
+
+        .form-grid {
             grid-template-columns: 1fr;
         }
 

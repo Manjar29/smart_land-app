@@ -8,21 +8,19 @@
         </div>
 
         <div class="notices-grid">
-            <article class="card">
-                <span class="notice-tag">Circular</span>
-                <h4>Mutation Certificate Delivery Timeline Updated</h4>
-                <p>New guideline reduces standard processing cycle to 21 working days.</p>
-            </article>
-            <article class="card">
-                <span class="notice-tag">Tax Deadline</span>
-                <h4>Khajna Payment Deadline for 2026 Announced</h4>
-                <p>Complete annual tax payment before September 30 to avoid late fines.</p>
-            </article>
-            <article class="card">
-                <span class="notice-tag">Service Update</span>
-                <h4>District Helpdesk Extended for Rural Citizens</h4>
-                <p>Support desks are now open six days a week in selected upazilas.</p>
-            </article>
+            @forelse ($notices ?? [] as $notice)
+                <article class="card">
+                    <span class="notice-tag">{{ $notice->notice_type }}</span>
+                    <h4>{{ $notice->title }}</h4>
+                    <p>{{ $notice->body }}</p>
+                </article>
+            @empty
+                <article class="card">
+                    <span class="notice-tag">Circular</span>
+                    <h4>No active notices yet</h4>
+                    <p>Administrators can add notices from the district dashboard.</p>
+                </article>
+            @endforelse
         </div>
     </div>
 </section>
