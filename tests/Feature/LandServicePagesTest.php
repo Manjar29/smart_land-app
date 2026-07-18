@@ -22,7 +22,7 @@ class LandServicePagesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Smart Digital Land Record System');
-        $response->assertSee('Mutation Application');
+        $response->assertSee('Track Khajna');
     }
 
     public function test_land_search_filters_records(): void
@@ -36,10 +36,19 @@ class LandServicePagesTest extends TestCase
 
     public function test_mutation_tracking_shows_case(): void
     {
-        $response = $this->get('/mutation-tracking?district=Dhaka&upazila=Savar&applicant_id_no=ID-001&land_percentage=42');
+        $response = $this->get('/mutation-tracking?district=Dhaka&upazila=Savar&dag_no=1205&tracking_no=MUT-2048');
 
         $response->assertOk();
         $response->assertSee('MUT-2048');
+        $response->assertSee('Abdul Karim');
+    }
+
+    public function test_khajna_tracking_shows_case(): void
+    {
+        $response = $this->get('/khajna-tracking?district=Dhaka&upazila=Savar&dag_no=1205&receipt_no=KH-TEST2048');
+
+        $response->assertOk();
+        $response->assertSee('KH-TEST2048');
         $response->assertSee('Abdul Karim');
     }
 
@@ -58,6 +67,14 @@ class LandServicePagesTest extends TestCase
         ]);
 
         $response->assertRedirect('/khajna-apply');
+        $this->assertDatabaseHas('land_records', [
+            'district' => 'Dhaka',
+            'upazila' => 'Savar',
+            'dag_no' => '1205',
+            'khatian_no' => 'KH-341',
+            'owner_name' => 'Test Citizen',
+            'khajna_status' => 'Submitted',
+        ]);
     }
 
     public function test_mutation_application_submits(): void
@@ -73,6 +90,13 @@ class LandServicePagesTest extends TestCase
         ]);
 
         $response->assertRedirect('/mutation-apply');
+        $this->assertDatabaseHas('land_records', [
+            'district' => 'Dhaka',
+            'upazila' => 'Savar',
+            'dag_no' => '1205',
+            'khatian_no' => 'KH-341',
+            'mutation_status' => 'Submitted',
+        ]);
     }
 
     public function test_district_admin_login_works(): void

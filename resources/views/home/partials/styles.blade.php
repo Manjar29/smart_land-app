@@ -107,10 +107,27 @@
         box-shadow: 0 10px 20px rgba(15, 118, 110, 0.25);
     }
 
+    .btn-danger {
+        background: #dc2626;
+        color: #fff;
+        box-shadow: 0 10px 20px rgba(220, 38, 38, 0.25);
+    }
+
+    .btn-success {
+        background: #16a34a;
+        color: #fff;
+        box-shadow: 0 10px 20px rgba(22, 163, 74, 0.25);
+    }
+
     .btn-light {
-        border-color: var(--line);
-        color: var(--ink);
-        background: #fff;
+        border-color: #bfdbfe;
+        color: #1e40af;
+        background: #dbeafe;
+        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15);
+    }
+    
+    .btn-light:hover {
+        background: #bfdbfe;
     }
 
     .hero {
@@ -177,6 +194,21 @@
     .hero-card h3 {
         margin-top: 0;
         font-size: 1.15rem;
+    }
+
+    .hero-visual {
+        border-radius: 16px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        margin-bottom: 1rem;
+    }
+
+    .hero-image {
+        display: block;
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
     }
 
     .hero-stats {
@@ -405,6 +437,57 @@
 
     .card p {
         margin: 0;
+        color: var(--ink-soft);
+    }
+
+    .button-row,
+    .admin-toolbar {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .application-card {
+        border-color: #cfe0f0;
+        background: linear-gradient(180deg, #fff, #f9fcff);
+    }
+
+    .applicant-list {
+        display: grid;
+        gap: 0.85rem;
+    }
+
+    .applicant-card {
+        border-style: dashed;
+    }
+
+    .detail-stack {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        color: var(--ink-soft);
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 0.55rem;
+    }
+
+    .detail-row strong {
+        color: var(--ink);
+    }
+
+    .action-panel {
+        display: grid;
+        gap: 0.65rem;
+    }
+
+    .notice-meta {
+        margin-top: 0.75rem !important;
+        font-size: 0.82rem;
         color: var(--ink-soft);
     }
 
