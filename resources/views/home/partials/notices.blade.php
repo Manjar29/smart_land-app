@@ -13,6 +13,7 @@
                     <span class="notice-tag">{{ $notice->notice_type }}</span>
                     <h4>{{ $notice->title }}</h4>
                     <p>{{ $notice->body }}</p>
+                    <p class="notice-meta">Published {{ optional($notice->published_at)->format('d M Y, h:i A') }}</p>
                 </article>
             @empty
                 <article class="card">

@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class DistrictAdmin extends Model
+class DistrictAdmin extends Authenticatable
 {
     use HasFactory;
 
@@ -17,4 +17,9 @@ class DistrictAdmin extends Model
     protected $hidden = [
         'password_hash',
     ];
+
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
 }

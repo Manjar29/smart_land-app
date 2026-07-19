@@ -8,55 +8,40 @@ use App\Models\LandRecord;
 use App\Models\MutationApplication;
 use App\Models\Notice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class LandServiceController extends Controller
 {
-    private const DISTRICT_UPAZILAS = [
-        'Pabna' => ['Pabna Sadar', 'Atgharia', 'Bera', 'Bhangura', 'Santhia', 'Sujanagar', 'Ishwardi', 'Chatmohar'],
-        'Sirajganj' => ['Sirajganj Sadar', 'Belkuchi', 'Chauhali', 'Kazipur', 'Raiganj', 'Shahjadpur', 'Tarash', 'Ullapara'],
-        'Dhaka' => ['Dhamrai', 'Dohar', 'Keraniganj', 'Nawabganj', 'Savar'],
-        'Khulna' => ['Batiaghata', 'Dacope', 'Dighalia', 'Koyra', 'Paikgachha', 'Phultala', 'Rupsa', 'Terokhada'],
-        'Jashore' => ['Abhaynagar', 'Bagherpara', 'Chaugachha', 'Jhikargachha', 'Keshabpur', 'Manirampur', 'Sharsha'],
-        'Rajshahi' => ['Bagha', 'Bagmara', 'Charghat', 'Durgapur', 'Godagari', 'Mohanpur', 'Paba', 'Puthia'],
-        'Comilla' => ['Adarsha Sadar', 'Burichang', 'Chauddagram', 'Debidwar', 'Laksam', 'Monohargonj', 'Nangalkot', 'Titas'],
-    ];
 
-    private const UPAZILA_UNIONS = [
-        'Pabna Sadar' => ['Hemayetpur', 'Maligacha', 'Sadar Union', 'Bharara', 'Dogachi'],
-        'Sirajganj Sadar' => ['Khokshabari', 'Kalia Haripur', 'Saydabad', 'Bagbati'],
-        'Dhamrai' => ['Amta', 'Balia', 'Bara Paturia', 'Bhararia'],
-        'Batiaghata' => ['Batiaghata Union', 'Bhandarkote', 'Gangarampur', 'Surkhali'],
-        'Abhaynagar' => ['Bagutia', 'Chalishia', 'Nawapara', 'Payra', 'Prembag'],
-        'Bagha' => ['Arani', 'Bausa', 'Chakrajapur', 'Gargari', 'Monigram'],
-        'Adarsha Sadar' => ['Amratoli', 'Durgapur', 'Jagannathpur', 'Panchthubi'],
-    ];
 
-    private function getUnionsForUpazila(string $upazila): array
+    private function getDistrictsFromApi(): array
     {
-        if (isset(self::UPAZILA_UNIONS[$upazila])) {
-            return self::UPAZILA_UNIONS[$upazila];
+        try {
+            $response = Http::timeout(5)->get('https://bdapis.com/api/v1.2/districts');
+            if ($response->successful()) {
+                $data = $response->json('data');
+                if (is_array($data)) {
+                    $districts = array_column($data, 'district');
+                    sort($districts);
+                    return $districts;
+                }
+            }
+        } catch (\Exception $e) {
+            // Silently fail and return empty if API is down
         }
-        
-        return [$upazila . ' Union 1', $upazila . ' Union 2', $upazila . ' Union 3'];
+        return [];
     }
+
 
     public function home()
     {
-        $allUnions = [];
-        foreach (self::DISTRICT_UPAZILAS as $district => $upazilas) {
-            foreach ($upazilas as $upazila) {
-                $allUnions[$upazila] = $this->getUnionsForUpazila($upazila);
-            }
-        }
-
         return view('welcome', [
             'notices' => Notice::query()->where('is_active', true)->orderByDesc('published_at')->get(),
-            'districts' => array_keys(self::DISTRICT_UPAZILAS),
-            'districtUpazilas' => self::DISTRICT_UPAZILAS,
-            'upazilaUnions' => $allUnions,
+            'districts' => $this->getDistrictsFromApi(),
         ]);
     }
 
@@ -94,13 +79,6 @@ class LandServiceController extends Controller
 
         $results = $query->orderBy('district')->orderBy('upazila')->orderBy('dag_no')->get();
 
-        $allUnions = [];
-        foreach (self::DISTRICT_UPAZILAS as $district => $upazilas) {
-            foreach ($upazilas as $upazila) {
-                $allUnions[$upazila] = $this->getUnionsForUpazila($upazila);
-            }
-        }
-
         // Mock BD Open API coords based on search
         $mapCenter = [23.685, 90.3563]; // default BD center
         if ($criteria['district'] === 'Dhaka') $mapCenter = [23.8103, 90.4125];
@@ -115,9 +93,7 @@ class LandServiceController extends Controller
             'criteria' => $criteria,
             'results' => $results,
             'totalRecords' => LandRecord::count(),
-            'districts' => array_keys(self::DISTRICT_UPAZILAS),
-            'districtUpazilas' => self::DISTRICT_UPAZILAS,
-            'upazilaUnions' => $allUnions,
+            'districts' => $this->getDistrictsFromApi(),
             'apiMapCenter' => $mapCenter,
         ]);
     }
@@ -155,19 +131,10 @@ class LandServiceController extends Controller
             $result = $query->latest()->first();
         }
 
-        $allUnions = [];
-        foreach (self::DISTRICT_UPAZILAS as $district => $upazilas) {
-            foreach ($upazilas as $upazila) {
-                $allUnions[$upazila] = $this->getUnionsForUpazila($upazila);
-            }
-        }
-
         return view('home.mutation-tracking', [
             'criteria' => $criteria,
             'result' => $result,
-            'districts' => array_keys(self::DISTRICT_UPAZILAS),
-            'districtUpazilas' => self::DISTRICT_UPAZILAS,
-            'upazilaUnions' => $allUnions,
+            'districts' => $this->getDistrictsFromApi(),
         ]);
     }
 
@@ -204,19 +171,10 @@ class LandServiceController extends Controller
             $result = $query->latest()->first();
         }
 
-        $allUnions = [];
-        foreach (self::DISTRICT_UPAZILAS as $district => $upazilas) {
-            foreach ($upazilas as $upazila) {
-                $allUnions[$upazila] = $this->getUnionsForUpazila($upazila);
-            }
-        }
-
         return view('home.khajna-tracking', [
             'criteria' => $criteria,
             'result' => $result,
-            'districts' => array_keys(self::DISTRICT_UPAZILAS),
-            'districtUpazilas' => self::DISTRICT_UPAZILAS,
-            'upazilaUnions' => $allUnions,
+            'districts' => $this->getDistrictsFromApi(),
         ]);
     }
 
@@ -260,18 +218,9 @@ class LandServiceController extends Controller
             return redirect()->route('khajna.apply')->with('khajnaReceipt', $record);
         }
 
-        $allUnions = [];
-        foreach (self::DISTRICT_UPAZILAS as $district => $upazilas) {
-            foreach ($upazilas as $upazila) {
-                $allUnions[$upazila] = $this->getUnionsForUpazila($upazila);
-            }
-        }
-
         return view('home.khajna-apply', [
             'receipt' => session('khajnaReceipt'),
-            'districts' => array_keys(self::DISTRICT_UPAZILAS),
-            'districtUpazilas' => self::DISTRICT_UPAZILAS,
-            'upazilaUnions' => $allUnions,
+            'districts' => $this->getDistrictsFromApi(),
         ]);
     }
 
@@ -317,32 +266,23 @@ class LandServiceController extends Controller
             return redirect()->route('mutation.apply')->with('mutationReceipt', $application);
         }
 
-        $allUnions = [];
-        foreach (self::DISTRICT_UPAZILAS as $district => $upazilas) {
-            foreach ($upazilas as $upazila) {
-                $allUnions[$upazila] = $this->getUnionsForUpazila($upazila);
-            }
-        }
-
         return view('home.mutation-apply', [
             'receipt' => session('mutationReceipt'),
-            'districts' => array_keys(self::DISTRICT_UPAZILAS),
-            'districtUpazilas' => self::DISTRICT_UPAZILAS,
-            'upazilaUnions' => $allUnions,
+            'districts' => $this->getDistrictsFromApi(),
         ]);
     }
 
     public function adminLoginForm()
     {
         return view('admin.login', [
-            'districts' => array_keys(self::DISTRICT_UPAZILAS),
+            'districts' => $this->getDistrictsFromApi(),
         ]);
     }
 
     public function adminLogin(Request $request)
     {
         $data = $request->validate([
-            'district' => ['required', 'string', 'in:' . implode(',', array_keys(self::DISTRICT_UPAZILAS))],
+            'district' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
@@ -357,30 +297,28 @@ class LandServiceController extends Controller
             ['password_hash' => Hash::make($expectedPassword)]
         );
 
-        $request->session()->put('district_admin', [
-            'id' => $admin->id,
-            'district' => $admin->district,
-        ]);
+        Auth::guard('admin')->login($admin);
 
         return redirect()->route('district-admin.dashboard');
     }
 
     public function adminDashboard(Request $request)
     {
-        $district = $request->session()->get('district_admin.district');
+        $district = Auth::guard('admin')->user()->district;
 
         return view('admin.dashboard', [
             'district' => $district,
             'khajnaApplications' => KhajnaApplication::query()->where('district', $district)->latest()->get(),
             'mutationApplications' => MutationApplication::query()->where('district', $district)->latest()->get(),
             'notices' => Notice::query()->orderByDesc('published_at')->get(),
-            'districts' => array_keys(self::DISTRICT_UPAZILAS),
+            'districts' => $this->getDistrictsFromApi(),
         ]);
     }
 
     public function adminLogout(Request $request)
     {
-        $request->session()->forget('district_admin');
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return redirect()->route('district-admin.login');
@@ -518,18 +456,57 @@ class LandServiceController extends Controller
 
     private function ensureDistrictMatch(Request $request, string $targetDistrict): void
     {
-        $district = $request->session()->get('district_admin.district');
+        $district = Auth::guard('admin')->user()->district;
 
         abort_unless($district && strcasecmp($district, $targetDistrict) === 0, 403, 'You can only manage your own district.');
     }
 
     private function ensureUpazilaMatchesDistrict(string $district, string $upazila): void
     {
-        $allowedUpazilas = self::DISTRICT_UPAZILAS[$district] ?? [];
-
-        if (! in_array($upazila, $allowedUpazilas, true)) {
+        try {
+            // Encode district to handle names with spaces securely
+            $encodedDistrict = urlencode(trim($district));
+            
+            // Call BD Open API with proper timeout
+            $response = Http::timeout(10)->get("https://bdapis.com/api/v1.2/district/{$encodedDistrict}");
+            
+            if ($response->successful()) {
+                $data = $response->json('data');
+                
+                // Check if data exists and contains upazillas
+                if (!empty($data) && isset($data[0]['upazillas'])) {
+                    $upazilas = $data[0]['upazillas'];
+                    
+                    // Verify the submitted upazila exists in the district's upazilas array
+                    if (!in_array($upazila, $upazilas, true)) {
+                        throw ValidationException::withMessages([
+                            'upazila' => 'The selected upazila is invalid for the chosen district.'
+                        ]);
+                    }
+                } else {
+                    // API responded successfully but format was unexpected or district empty
+                    throw ValidationException::withMessages([
+                        'district' => 'The selected district could not be validated.'
+                    ]);
+                }
+            } else {
+                // API returned 4xx or 5xx error (e.g. invalid district name)
+                throw ValidationException::withMessages([
+                    'district' => 'Failed to retrieve upazila data for the given district.'
+                ]);
+            }
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            // Handle timeout or connection issues
             throw ValidationException::withMessages([
-                'upazila' => 'The selected upazila does not belong to the chosen district.',
+                'upazila' => 'Unable to connect to the location validation server. Please try again later.'
+            ]);
+        } catch (ValidationException $e) {
+            // Rethrow validation exceptions so Laravel handles them
+            throw $e;
+        } catch (\Exception $e) {
+            // General fallback exception catch
+            throw ValidationException::withMessages([
+                'upazila' => 'An unexpected error occurred during location validation.'
             ]);
         }
     }

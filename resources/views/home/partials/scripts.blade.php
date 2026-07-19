@@ -1,6 +1,5 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-    window.districtUpazilas = @json($districtUpazilas ?? []);
 
     const revealItems = document.querySelectorAll(".reveal");
     const revealObserver = new IntersectionObserver((entries) => {
@@ -13,42 +12,10 @@
 
     revealItems.forEach((item) => revealObserver.observe(item));
 
-    const dependentDistricts = document.querySelectorAll("[data-dependent-district]");
-    const dependentUpazilas = document.querySelectorAll("[data-dependent-upazila]");
-
-    function populateUpazilaOptions(districtValue) {
-        const options = window.districtUpazilas?.[districtValue] || [];
-
-        dependentUpazilas.forEach((select) => {
-            const currentValue = select.dataset.selectedUpazila || select.value;
-            select.innerHTML = '<option value="">Select Upazila</option>';
-
-            options.forEach((upazila) => {
-                const option = document.createElement('option');
-                option.value = upazila;
-                option.textContent = upazila;
-                if (currentValue === upazila) {
-                    option.selected = true;
-                }
-                select.appendChild(option);
-            });
-
-            delete select.dataset.selectedUpazila;
-        });
-    }
-
-    dependentDistricts.forEach((districtSelect) => {
-        districtSelect.addEventListener('change', (event) => {
-            dependentUpazilas.forEach((select) => {
-                delete select.dataset.selectedUpazila;
-            });
-            populateUpazilaOptions(event.target.value);
-        });
-
-        if (districtSelect.value) {
-            populateUpazilaOptions(districtSelect.value);
-        }
-    });
+    window.districts = @json($districts ?? []);
+</script>
+<script src="{{ asset('js/location.js') }}"></script>
+<script>
 
     const khajnaAmountInput = document.getElementById('land_percentage');
     const khajnaAmountPreview = document.getElementById('amount_preview');
@@ -73,9 +40,23 @@
         updateChargePreview();
     }
 
+    const applicantList = document.getElementById('mutation-applicants');
+    const applicantTemplate = document.getElementById('applicant-template');
+    const addApplicantButton = document.querySelector('[data-add-applicant]');
+
+    if (applicantList && applicantTemplate && addApplicantButton) {
+        addApplicantButton.addEventListener('click', () => {
+            const nextIndex = applicantList.querySelectorAll('[data-applicant-card]').length + 1;
+            const template = applicantTemplate.innerHTML.replaceAll('__INDEX__', String(nextIndex));
+            applicantList.insertAdjacentHTML('beforeend', template);
+        });
+    }
+
     const mapElement = document.getElementById("landMap");
     if (mapElement) {
-        const map = L.map("landMap").setView([23.685, 90.3563], 7);
+        const lat = parseFloat(mapElement.dataset.lat || 23.685);
+        const lng = parseFloat(mapElement.dataset.lng || 90.3563);
+        const map = L.map("landMap").setView([lat, lng], 9);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             attribution: "&copy; OpenStreetMap contributors"
@@ -93,5 +74,12 @@
                 .addTo(map)
                 .bindPopup(`<strong>${point.name}</strong><br>GPS: ${point.lat}, ${point.lng}`);
         });
+
+        if (lat !== 23.685 && lng !== 90.3563) {
+            L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup(`<strong>Search Location</strong><br>GPS: ${lat}, ${lng}`)
+                .openPopup();
+        }
     }
 </script>

@@ -10,22 +10,13 @@
             </div>
         </article>
 
-        <form class="card" action="#" method="POST">
-            @csrf
-            <h3 style="margin-top: 0;">Send a Quick Inquiry</h3>
-            <div class="field">
-                <label for="name">Name</label>
-                <input id="name" name="name" type="text" placeholder="Your name">
+        <article class="card">
+            <h3 style="margin-top: 0;">Need Help?</h3>
+            <p>Use the khajna or mutation tracking pages to check status without submitting a contact message.</p>
+            <div class="button-row" style="margin-top: 1rem;">
+                <a class="btn btn-brand" href="{{ route('khajna.track') }}">Track Khajna</a>
+                <a class="btn btn-light" href="{{ route('mutation.track') }}">Track Mutation</a>
             </div>
-            <div class="field">
-                <label for="email">Email</label>
-                <input id="email" name="email" type="email" placeholder="you@example.com">
-            </div>
-            <div class="field">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" rows="4" placeholder="How can we help?"></textarea>
-            </div>
-            <button class="btn btn-brand" type="submit">Submit Message</button>
-        </form>
+        </article>
     </div>
 </section>

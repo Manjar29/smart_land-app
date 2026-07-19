@@ -14,16 +14,13 @@
             <form class="search-box" action="{{ route('mutation.track') }}" method="GET">
                 <div class="field">
                     <label for="district">District</label>
-                    <select id="district" name="district" data-dependent-district>
+                    <select id="district" name="district" data-dependent-district data-selected-district="{{ old('district', $criteria['district'] ?? '') }}">
                         <option value="">Select District</option>
-                        @foreach ($districts as $district)
-                            <option value="{{ $district }}" @selected($criteria['district'] === $district)>{{ $district }}</option>
-                        @endforeach
                     </select>
                 </div>
                 <div class="field">
                     <label for="upazila">Upazila</label>
-                    <select id="upazila" name="upazila" data-dependent-upazila data-selected-upazila="{{ $criteria['upazila'] }}">
+                    <select id="upazila" name="upazila" data-dependent-upazila data-selected-upazila="{{ old('upazila', $criteria['upazila'] ?? '') }}">
                         <option value="">Select Upazila</option>
                     </select>
                 </div>

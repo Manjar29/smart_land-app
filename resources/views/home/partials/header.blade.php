@@ -15,6 +15,8 @@
             <a href="#contact">Contact</a>
             <a href="{{ route('khajna.apply') }}">Khajna</a>
             <a href="{{ route('mutation.apply') }}">Mutation</a>
+            <a href="{{ route('khajna.track') }}">Track Khajna</a>
+            <a href="{{ route('mutation.track') }}">Track Mutation</a>
             <a href="{{ route('district-admin.login') }}">Admin</a>
             @if (Route::has('login'))
                 @auth

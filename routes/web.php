@@ -22,12 +22,12 @@ Route::match(['get', 'post'], '/khajna-apply', [LandServiceController::class, 'k
 Route::match(['get', 'post'], '/mutation-apply', [LandServiceController::class, 'mutationApply'])->name('mutation.apply');
 
 Route::prefix('district-admin')->name('district-admin.')->group(function () {
-	Route::middleware('district.guest')->group(function () {
+	Route::middleware('guest:admin')->group(function () {
 		Route::get('/login', [LandServiceController::class, 'adminLoginForm'])->name('login');
 		Route::post('/login', [LandServiceController::class, 'adminLogin'])->name('login.attempt');
 	});
 
-	Route::middleware('district.admin')->group(function () {
+	Route::middleware('auth:admin')->group(function () {
 		Route::get('/', [LandServiceController::class, 'adminDashboard'])->name('dashboard');
 		Route::get('/home', [LandServiceController::class, 'home'])->name('home');
 		Route::post('/logout', [LandServiceController::class, 'adminLogout'])->name('logout');

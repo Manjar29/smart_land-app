@@ -13,12 +13,16 @@
             </div>
             <div style="display: flex; gap: 0.75rem; margin-top: 1.2rem; flex-wrap: wrap;">
                 <a href="{{ route('land.search') }}" class="btn btn-brand">Search Land Record</a>
+                <a href="{{ route('khajna.track') }}" class="btn btn-light">Track Khajna</a>
                 <a href="{{ route('mutation.track') }}" class="btn btn-light">Track Mutation</a>
                 <a href="{{ route('khajna.apply') }}" class="btn btn-light">Apply for Khajna</a>
             </div>
         </div>
 
         <aside class="hero-card reveal">
+            <div class="hero-visual">
+                <img src="{{ asset('image.png') }}" alt="Land use planning map" class="hero-image">
+            </div>
             <h3>Citizen Service Snapshot</h3>
             <p style="margin: 0; opacity: 0.92;">Real-time module summary for land, tax, and ownership transfer requests.</p>
             <div class="hero-stats">

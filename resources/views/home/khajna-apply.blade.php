@@ -46,11 +46,8 @@
                         </div>
                         <div class="field">
                             <label for="district">District</label>
-                            <select id="district" name="district" data-dependent-district required>
+                            <select id="district" name="district" data-dependent-district data-selected-district="{{ old('district') }}" required>
                                 <option value="">Select District</option>
-                                @foreach ($districts as $district)
-                                    <option value="{{ $district }}" @selected(old('district') === $district)>{{ $district }}</option>
-                                @endforeach
                             </select>
                         </div>
                         <div class="field">

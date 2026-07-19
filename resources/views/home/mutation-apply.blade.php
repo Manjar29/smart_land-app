@@ -27,11 +27,8 @@
                     <div class="form-grid">
                         <div class="field">
                             <label for="district">District</label>
-                            <select id="district" name="district" data-dependent-district>
+                            <select id="district" name="district" data-dependent-district data-selected-district="{{ old('district') }}">
                                 <option value="">Select District</option>
-                                @foreach ($districts as $district)
-                                    <option value="{{ $district }}" @selected(old('district') === $district)>{{ $district }}</option>
-                                @endforeach
                             </select>
                         </div>
                         <div class="field">
