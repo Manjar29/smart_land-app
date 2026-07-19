@@ -6,7 +6,7 @@
             <div class="section-head">
                 <div>
                     <h2>District Admin Login</h2>
-                    <p>Use the district name as the username and the password format districtname123.</p>
+                    <p>Select your district and enter your administrator password to continue.</p>
                 </div>
                 <a href="{{ route('home') }}" class="btn btn-light">Back to Home</a>
             </div>
@@ -25,7 +25,7 @@
                     </div>
                     <div class="field">
                         <label for="password">Password</label>
-                        <input id="password" name="password" type="password" placeholder="districtname123" required>
+                        <input id="password" name="password" type="password" placeholder="Enter password" required>
                     </div>
                 </div>
 

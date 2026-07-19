@@ -8,7 +8,10 @@
                     <h2>Apply for Khajna</h2>
                     <p>Submit the tax application against a land record and receive a receipt number for follow-up.</p>
                 </div>
-                <a href="{{ route('home') }}" class="btn btn-light">Back to Home</a>
+                <div class="button-row">
+                    <a href="{{ route('khajna.track') }}" class="btn btn-light">Track Khajna</a>
+                    <a href="{{ route('home') }}" class="btn btn-light">Back to Home</a>
+                </div>
             </div>
 
             @if ($receipt)
@@ -52,10 +55,17 @@
                         </div>
                         <div class="field">
                             <label for="upazila">Upazila</label>
-                            <select id="upazila" name="upazila" data-dependent-upazila data-selected-upazila="{{ old('upazila') }}" required>
+                            <select id="upazila" name="upazila" data-dependent-upazila data-selected-upazila="{{ old('upazila') }}">
                                 <option value="">Select Upazila</option>
                             </select>
                         </div>
+                        <div class="field">
+                            <label for="union_name">Union</label>
+                            <select id="union_name" name="union_name" data-dependent-union data-selected-union="{{ old('union_name') }}" required>
+                                <option value="">Select Union</option>
+                            </select>
+                        </div>
+
                         <div class="field">
                             <label for="mobile">Mobile Number</label>
                             <input id="mobile" name="mobile" type="text" value="{{ old('mobile') }}" required>
@@ -84,6 +94,7 @@
                         <div class="timeline-item"><b></b><span>Submit the khajna request with the current tax year and payable amount.</span></div>
                         <div class="timeline-item"><b></b><span>Use the generated receipt number to track the request status later.</span></div>
                     </div>
+                    <a href="{{ route('khajna.track') }}" class="btn btn-brand">Track by Receipt or Dag No</a>
                 </aside>
             </div>
         </div>

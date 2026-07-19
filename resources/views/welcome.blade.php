@@ -5,7 +5,6 @@
     @include('home.partials.search')
     @include('home.partials.services')
     @include('home.partials.notices')
-    @include('home.partials.map')
     @include('home.partials.workflow')
     @include('home.partials.contact')
 @endsection

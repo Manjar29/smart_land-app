@@ -41,6 +41,12 @@
                             </select>
                         </div>
                         <div class="field">
+                            <label for="union_name">Union</label>
+                            <select id="union_name" name="union_name" data-dependent-union data-selected-union="{{ old('union_name') }}" required>
+                                <option value="">Select Union</option>
+                            </select>
+                        </div>
+                        <div class="field">
                             <label for="dag_no">Dag Number</label>
                             <input id="dag_no" name="dag_no" type="text" value="{{ old('dag_no') }}" required>
                         </div>
@@ -58,35 +64,48 @@
                         </div>
                     </div>
 
-                    <div class="card" style="border-style: dashed;">
-                        <h4>Applicant 1</h4>
-                        <div class="form-grid">
-                            <div class="field">
-                                <label for="applicant_name_0">Applicant Name</label>
-                                <input id="applicant_name_0" name="applicant_name[]" type="text" value="{{ old('applicant_name.0') }}" required>
+                    @php
+                        $applicantCount = max(count(old('applicant_name', [])), count(old('applicant_id_no', [])), 2);
+                    @endphp
+
+                    <div id="mutation-applicants" class="applicant-list">
+                        @for ($index = 0; $index < $applicantCount; $index++)
+                            <div class="card applicant-card" data-applicant-card>
+                                <h4>Applicant {{ $index + 1 }}</h4>
+                                <div class="form-grid">
+                                    <div class="field">
+                                        <label for="applicant_name_{{ $index }}">Applicant Name</label>
+                                        <input id="applicant_name_{{ $index }}" name="applicant_name[]" type="text" value="{{ old('applicant_name.' . $index) }}" @if ($index === 0) required @endif>
+                                    </div>
+                                    <div class="field">
+                                        <label for="applicant_id_no_{{ $index }}">Applicant ID No</label>
+                                        <input id="applicant_id_no_{{ $index }}" name="applicant_id_no[]" type="text" value="{{ old('applicant_id_no.' . $index) }}" @if ($index === 0) required @endif>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="field">
-                                <label for="applicant_id_no_0">Applicant ID No</label>
-                                <input id="applicant_id_no_0" name="applicant_id_no[]" type="text" value="{{ old('applicant_id_no.0') }}" required>
-                            </div>
-                        </div>
+                        @endfor
                     </div>
 
-                    <div class="card" style="border-style: dashed;">
-                        <h4>Applicant 2</h4>
-                        <div class="form-grid">
-                            <div class="field">
-                                <label for="applicant_name_1">Applicant Name</label>
-                                <input id="applicant_name_1" name="applicant_name[]" type="text" value="{{ old('applicant_name.1') }}">
-                            </div>
-                            <div class="field">
-                                <label for="applicant_id_no_1">Applicant ID No</label>
-                                <input id="applicant_id_no_1" name="applicant_id_no[]" type="text" value="{{ old('applicant_id_no.1') }}">
+                    <template id="applicant-template">
+                        <div class="card applicant-card" data-applicant-card>
+                            <h4>Applicant __INDEX__</h4>
+                            <div class="form-grid">
+                                <div class="field">
+                                    <label for="applicant_name___INDEX__">Applicant Name</label>
+                                    <input id="applicant_name___INDEX__" name="applicant_name[]" type="text">
+                                </div>
+                                <div class="field">
+                                    <label for="applicant_id_no___INDEX__">Applicant ID No</label>
+                                    <input id="applicant_id_no___INDEX__" name="applicant_id_no[]" type="text">
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
 
-                    <button class="btn btn-brand" type="submit" style="margin-top: 1rem;">Submit Mutation</button>
+                    <div class="button-row" style="margin-top: 1rem;">
+                        <button class="btn btn-brand" style="background:#0284c7; border-color:#0284c7;" type="button" data-add-applicant><span style="margin-right:0.5rem; font-weight:900; font-size:1.1rem;">(+)</span> Add More Applicants</button>
+                        <button class="btn btn-brand" type="submit">Submit Mutation</button>
+                    </div>
                 </form>
 
                 <aside class="card form-panel">
@@ -96,6 +115,7 @@
                         <div class="timeline-item"><b></b><span>Multiple applicants can be entered for the same mutation request.</span></div>
                         <div class="timeline-item"><b></b><span>Charges are computed automatically from the land quantity percentage.</span></div>
                     </div>
+                    <a href="{{ route('mutation.track') }}" class="btn btn-light">Track Mutation Status</a>
                 </aside>
             </div>
         </div>

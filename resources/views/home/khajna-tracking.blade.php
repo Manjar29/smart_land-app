@@ -1,17 +1,17 @@
-@extends('layouts.home', ['title' => 'Mutation Tracking'])
+@extends('layouts.home', ['title' => 'Khajna Tracking'])
 
 @section('content')
     <section class="reveal">
         <div class="container">
             <div class="section-head">
                 <div>
-                    <h2>Mutation Tracking</h2>
-                    <p>Track by district, upazila, dag number and mutation tracking number.</p>
+                    <h2>Khajna Tracking</h2>
+                    <p>Track by district, upazila, dag number and receipt number.</p>
                 </div>
                 <a href="{{ route('home') }}" class="btn btn-light">Back to Home</a>
             </div>
 
-            <form class="search-box" action="{{ route('mutation.track') }}" method="GET">
+            <form class="search-box" action="{{ route('khajna.track') }}" method="GET">
                 <div class="field">
                     <label for="district">District</label>
                     <select id="district" name="district" data-dependent-district>
@@ -29,32 +29,31 @@
                 </div>
                 <div class="field">
                     <label for="dag_no">Dag Number</label>
-                    <input id="dag_no" name="dag_no" type="text" value="{{ $criteria['dag_no'] }}" placeholder="Mutation plot dag number">
+                    <input id="dag_no" name="dag_no" type="text" value="{{ $criteria['dag_no'] }}" placeholder="Plot number">
                 </div>
                 <div class="field">
-                    <label for="tracking_no">Mutation ID / Tracking No</label>
-                    <input id="tracking_no" name="tracking_no" type="text" value="{{ $criteria['tracking_no'] }}" placeholder="Mutation tracking number">
+                    <label for="receipt_no">Khajna ID / Receipt No</label>
+                    <input id="receipt_no" name="receipt_no" type="text" value="{{ $criteria['receipt_no'] }}" placeholder="Receipt number">
                 </div>
                 <div style="display: flex; align-items: end;">
-                    <button class="btn btn-brand" style="width: 100%;" type="submit">Track Case</button>
+                    <button class="btn btn-brand" style="width: 100%;" type="submit">Track Khajna</button>
                 </div>
             </form>
 
             <div class="two-col-grid">
                 <article class="card form-panel">
-                    <h3>Case Status</h3>
+                    <h3>Status Result</h3>
                     @if ($result)
-                        <span class="status-pill">{{ $result['status'] }}</span>
-                        <p><strong>{{ $result->tracking_no }}</strong> for Dag {{ $result->dag_no }} and Khatian {{ $result->khatian_no }}.</p>
+                        <span class="status-pill">{{ $result->status }}</span>
+                        <p><strong>{{ $result->receipt_no }}</strong> for Dag {{ $result->dag_no }} and Khatian {{ $result->khatian_no }}.</p>
                         <p>Applicant: {{ $result->applicant_name }}</p>
-                        <p>Applicant IDs: {{ $result->applicant_id_no }}</p>
-                        <p>Land quantity: {{ $result->land_percentage }}%</p>
-                        <p>Charge: {{ number_format($result->amount, 2) }} Taka</p>
+                        <p>Land percentage: {{ $result->land_percentage }}%</p>
+                        <p>Amount: {{ number_format($result->amount, 2) }} Taka</p>
                         <p>Last updated: {{ $result->updated_at->format('d M Y, h:i A') }}</p>
                     @elseif (collect($criteria)->filter()->isNotEmpty())
-                        <p>No case found for the district, upazila, dag number and tracking number you entered.</p>
+                        <p>No khajna request found for the district, upazila, dag number and receipt number you entered.</p>
                     @else
-                        <p>Search by district, upazila, dag number and mutation ID to see the latest mutation progress.</p>
+                        <p>Search by district, upazila, dag number and receipt number to see the latest khajna progress.</p>
                     @endif
                 </article>
 
@@ -64,7 +63,7 @@
                         <div class="timeline">
                             <div class="timeline-item"><b></b><span>Application received</span></div>
                             <div class="timeline-item"><b></b><span>Status: {{ $result->status }}</span></div>
-                            <div class="timeline-item"><b></b><span>Notes: {{ $result->notes ?? 'Awaiting officer note' }}</span></div>
+                            <div class="timeline-item"><b></b><span>Tax year: {{ $result->tax_year }}</span></div>
                         </div>
                     @else
                         <p class="muted">The timeline will appear after a case is found.</p>

@@ -41,41 +41,48 @@
             </form>
 
             <div class="results-shell">
-                <div class="section-head" style="margin-top: 1.2rem;">
-                    <div>
-                        <h2>Search Results</h2>
-                        <p>{{ count($results) }} of {{ $totalRecords }} records matched your request.</p>
-                    </div>
-                </div>
-
-                <div class="results-grid">
-                    @forelse ($results as $record)
-                        <article class="result-card card">
-                            <div class="result-top">
-                                <div>
-                                    <span class="status-pill">{{ $record->khajna_status }}</span>
-                                    <h3>Dag {{ $record->dag_no }} | {{ $record->khatian_no }}</h3>
-                                </div>
-                                <div class="result-meta">{{ $record->district }}, {{ $record->upazila }}</div>
-                            </div>
-                            <p>{{ $record->owner_name }} owns the plot in {{ $record->mouza }}, {{ $record->upazila }}, {{ $record->district }}.</p>
-                            <div class="result-details">
-                                <span>Area: {{ $record->area_percentage }}%</span>
-                                <span>Mouza: {{ $record->mouza }}</span>
-                                <span>District: {{ $record->district }}</span>
-                                <span>Upazila: {{ $record->upazila }}</span>
-                                <span>Mutation: {{ $record->mutation_status }}</span>
-                                <span>Previous Khajna: {{ number_format($record->previous_khajna_amount, 2) }} Taka</span>
-                                <span>Previous Mutation: {{ $record->previous_mutation_reference ?? 'N/A' }}</span>
-                            </div>
-                        </article>
-                    @empty
-                        <div class="card" style="grid-column: 1 / -1;">
-                            <h3>No matching record found</h3>
-                            <p>Try a broader search or clear one of the filters.</p>
+                @if ($criteria['dag_no'] || $criteria['khatian_no'] || $criteria['district'] || $criteria['upazila'] || ($criteria['union_name'] ?? false))
+                    @if ($results->isEmpty())
+                        <div class="card" style="text-align: center; padding: 2rem;">
+                            <p class="muted">No matching land records found. Try adjusting your search criteria.</p>
                         </div>
-                    @endforelse
-                </div>
+                    @else
+                        <div class="two-col-grid" style="align-items: start;">
+                            <div class="results-grid" style="grid-template-columns: 1fr;">
+                                @foreach ($results as $record)
+                                    <div class="card result-card">
+                                        <div class="result-top">
+                                            <div>
+                                                <h3>{{ $record->dag_no }} / {{ $record->khatian_no }}</h3>
+                                                <div class="result-meta">{{ $record->mouza }}, {{ $record->union_name ? $record->union_name . ', ' : '' }}{{ $record->upazila }}, {{ $record->district }}</div>
+                                            </div>
+                                            <span class="status-pill">Active</span>
+                                        </div>
+                                        <div class="result-details">
+                                            <span><strong>Owner:</strong> {{ $record->owner_name }}</span>
+                                            <span><strong>Area:</strong> {{ $record->area_percentage }}%</span>
+                                            <span><strong>Khajna:</strong> {{ $record->khajna_status }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            
+                            <div class="card form-panel" style="position: sticky; top: 85px;">
+                                <h3 style="margin: 0; display:flex; justify-content:space-between; align-items:center;">
+                                    Land Map 
+                                    <span style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.2rem 0.5rem; border-radius: 999px;">BD Open API</span>
+                                </h3>
+                                <p class="muted" style="font-size: 0.9rem; margin-top:0;">Interactive geographical plot powered by national land data.</p>
+                                <div id="landMap" data-lat="{{ $apiMapCenter[0] ?? 23.685 }}" data-lng="{{ $apiMapCenter[1] ?? 90.3563 }}"></div>
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <div class="card" style="text-align: center; padding: 2rem;">
+                        <p class="muted">Enter search criteria above to locate land records across Bangladesh.</p>
+                        <p class="muted" style="font-size: 0.9rem;">Total digitized records: <strong>{{ number_format($totalRecords) }}</strong></p>
+                    </div>
+                @endif
             </div>
         </div>
     </section>
